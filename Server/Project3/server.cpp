@@ -15,6 +15,10 @@
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
 
+//setting up some more client variables
+const char OPTION_VALUE = 1;
+const int maxClients = 5;
+
 int __cdecl main(void)
 {
 	WSADATA wsaData;
@@ -44,36 +48,21 @@ int __cdecl main(void)
 	hints.ai_flags = AI_PASSIVE;
  //setup Server
     std::cout << "Setting up server..." << std::endl;
+	
+//create a listening socket for connecting to server
+	std::cout << "Creating server socket..." << std::endl;
+	server_socket = socket(server->ai_family, server->ai_socktype, server->ai_protocol);
+
+	//setup socket options
+	setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &OPTION_VALUE, sizeof(int)); //Make it possible to re-bind to a port that was used within the last 2 minutes
+	setsockopt(server_socket, IPPROTO_TCP, TCP_NODELAY, &OPTION_VALUE, sizeof(int)); //Used for interactive programs
+
+	//assign an address to the server socket.
+	std::cout << "Binding socket..." << std::endl;
+	bind(server_socket, server->ai_addr, (int)server->ai_addrlen);
+	
     getaddrinfo(static_cast<LPCTSTR>(IP_ADDRESS), DEFAULT_PORT, &hints, &server);
-	// Resolve the server address and port
-	iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
-	if (iResult != 0) {
-		printf("getaddrinfo failed with error: %d\n", iResult);
-		WSACleanup();
-		return 1;
-	}
-
-	// Create a SOCKET for connecting to server
-	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (ListenSocket == INVALID_SOCKET) {
-		printf("socket failed with error: %ld\n", WSAGetLastError());
-		freeaddrinfo(result);
-		WSACleanup();
-		return 1;
-	}
-
-	// Setup the TCP listening socket
-	iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-	if (iResult == SOCKET_ERROR) {
-		printf("bind failed with error: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
-		closesocket(ListenSocket);
-		WSACleanup();
-		return 1;
-	}
-
-	freeaddrinfo(result);
-
+	
 	iResult = listen(ListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
 		printf("listen failed with error: %d\n", WSAGetLastError());
