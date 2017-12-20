@@ -19,6 +19,10 @@
 const char OPTION_VALUE = 1;
 const int maxClients = 5;
 
+//setting up time
+time_t presentTime;
+struct tm * timeinfo;
+
 int __cdecl main(void)
 {
 	WSADATA wsaData;
