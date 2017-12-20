@@ -1,23 +1,39 @@
-#define WIN32_LEAN_AND_MEAN
-
-#include <windows.h>
+//Includes
+#include <iostream>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <string>
+#include <thread>
+#include <cstdlib>
+#include <time.h>
 
+//Namespaces
+using namespace std;
 
-// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
+//Pragmas
 #pragma comment (lib, "Ws2_32.lib")
-#pragma comment (lib, "Mswsock.lib")
-#pragma comment (lib, "AdvApi32.lib")
+#pragma warning (disable:4996)
 
-
+//Defines
+#define DEFAULT_IP "172.24.218.249" 	//Change in accordance to your PC
+#define DEFAULT_PORT "132"		//Change in accordance to your PC
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27015"
 
-int __cdecl main(int argc, char **argv)
-{
+struct client_type {
+	SOCKET socket;
+	int id;
+	char received_message[DEFAULT_BUFLEN];
+};
+
+
+
+
+
+
+
+
+
+int main() {
 	WSADATA wsaData;
 	SOCKET ConnectSocket = INVALID_SOCKET;
 	struct addrinfo *result = NULL,
