@@ -61,6 +61,15 @@ int __cdecl main(void)
 	std::cout << "Binding socket..." << std::endl;
 	bind(server_socket, server->ai_addr, (int)server->ai_addrlen);
 	
+	//listen for incoming connections.
+   	std::cout << "Listening...\n" << std::endl;
+    	listen(server_socket, SOMAXCONN);
+ 
+   	//initialize client list
+    	for (int i = 0; i < maxClients; i++) {
+        client[i] = { -1, INVALID_SOCKET };
+    }
+	
     getaddrinfo(static_cast<LPCTSTR>(IP_ADDRESS), DEFAULT_PORT, &hints, &server);
 	
 	iResult = listen(ListenSocket, SOMAXCONN);
