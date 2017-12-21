@@ -12,6 +12,12 @@
 #pragma comment (lib, "Ws2_32.lib")
 // #pragma comment (lib, "Mswsock.lib")
 
+//setting up clients
+struct client_type {
+    int id;
+    SOCKET socket;
+};
+
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
 
@@ -80,15 +86,15 @@ int __cdecl main(void)
 		return 1;
 	}
 
-	// Accept a client socket
-	ClientSocket = accept(ListenSocket, NULL, NULL);
-	if (ClientSocket == INVALID_SOCKET) {
-		printf("accept failed with error: %d\n", WSAGetLastError());
-		closesocket(ListenSocket);
-		WSACleanup();
-		return 1;
-	}
-
+	  while (1) {
+        SOCKET incoming = INVALID_SOCKET;
+        incoming = accept(server_socket, NULL, NULL); //accepts client
+		  
+		  
+		  
+		  
+		  
+	  }
 	// No longer need server socket
 	closesocket(ListenSocket);
 
