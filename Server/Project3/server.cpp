@@ -106,7 +106,11 @@ int __cdecl main(void)
 				sum_clients++; //number of clients raised by 1
 			}
 		  
-		  
+		  else {
+			  msg = "The server is currently full!";
+			  send(incoming, msg.c_str(), strlen(msg.c_str()), 0);
+			  std::cout << msg << std::endl; //prints in server that the server is full
+		  }
 		  
 	  }
 	// No longer need server socket
