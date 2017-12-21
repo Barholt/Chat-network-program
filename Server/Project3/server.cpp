@@ -90,7 +90,21 @@ int __cdecl main(void)
         SOCKET incoming = INVALID_SOCKET;
         incoming = accept(server_socket, NULL, NULL); //accepts client
 		  
-		  
+	//reset the number of clients
+		sum_clients = -1;
+
+		//assign ID to client
+		tI = -1;
+		for (int i = 0; i < maxClients; i++) {
+			if (client[i].socket == INVALID_SOCKET && tI == -1) {
+				client[i].socket = incoming;
+				client[i].id = i;
+				tI = i;
+			}
+
+			if (client[i].socket != INVALID_SOCKET) {
+				sum_clients++; //number of clients raised by 1
+			}
 		  
 		  
 		  
