@@ -34,7 +34,85 @@ struct client_type {
 
 
 int main() {
-	WSADATA wsaData;
+	WSAData wsa_data; //Structure contains information about windows socket implementation
+	struct addrinfo *result = NULL, *ptr = NULL, hints; //Structure holds host address information
+	string = sent_message = ""; //These quotationmarks marks the messages that are being sent
+	client_type client = { INVALID_SOCKET, -1, ""}; //Calls a previous struct, and sets variables 
+	int iResult = 0;
+	string message;
+	
+	cout << "Starting program...\n";
+	
+	//Initializing the Winsocket
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+	if (iResult != 0) {
+		cout << "Start-up failed with the following error: " << iRestult << endl;
+	}
+	
+	ZeroMemory(&hints, sizeof(hints)); //Fills memory with 0's to create the socket
+	hints.ai_family = AF_UNSPEC; //Returns socket address for any address family
+	hints.ai_socktype = SOCK_STREAM; //Specifies the socket type
+	hints.ai_protocol = IPPROTO_TCP; //Determines the connection type
+	
+	cout << "Connecting to server... \n";
+	
+	//Resolving the server address and server port
+	iResult == getaddrinfo(static_cast<LPCTSTR>(IP_ADDRESS), DEFAULT_PORT, &hints, &result);
+	if (iResult != 0) { //If iResult is not 0, it is an error
+		cout << "Failed to get address with the following error: " << iResult << endl;
+		WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
+		system("pause");
+		return 1;
+	}
+	
+	//Attempting to connect to an address until succeeded
+	for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+		//Creating a socket for connecting to the server
+		client.socket = socket(ptr->ai_family, ptr->ai:socktype, ptr->ai_protocol);
+		if (client.socket == INVALID SOCKET) {
+			cout << "The socket failed with the following error: " << WSAGetLastError() << endl;
+			WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
+			system("pause");
+			return 1;
+		}
+	
+		//Connecting to server
+		iResult = connect(client.socket, ptr->ai_addr, (int)ptr->ai_addrlen);
+		if (iResult == SOCKET_ERROR) { //If socket error occours, it is invalid
+			closesocket(client.socket);
+			client.socket = INVALID_SOCKET;
+			continue;
+		}
+	break;
+	}
+freeaddrinfo(result); //Frees address information
+
+if (client.socket == INVALID_SOCKET) { //If client.socket is invalid, then no connection to the server is made
+	cout << "Unable to connect to server!" << endl;
+	WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
+	system("pause");
+	return 1;
+}
+//If no errors are encountered, then the connection to the server is successful
+	cout << "Successfully connected to server!\nTo close the program, type 'QUIT'\n\nMe:" << endl;
+	
+//Obtaining the ID from the server for the client
+recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
+message = client.received_message;
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	SOCKET ConnectSocket = INVALID_SOCKET;
 	struct addrinfo *result = NULL,
 		*ptr = NULL,
