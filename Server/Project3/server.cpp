@@ -32,7 +32,6 @@ struct tm * timeinfo;
 
 //starting up the client message construction
 int clientConnector(client_type &new_client, std::vector<client_type> &client_array, std::thread &thread) {
-
 	std::string msg = "";
 	char tm[DEFAULT_BUFLEN] = ""; //tm is short for temporary message
 
@@ -65,46 +64,6 @@ int clientConnector(client_type &new_client, std::vector<client_type> &client_ar
 					}
 				}
 			}
-
-    std::string msg = "";
-    char tm[DEFAULT_BUFLEN] = ""; //tm is short for temporary message
-	
-	//if the client closes their window it saves who disconnected
-	else {
-		msg = "Client #" + std::to_string(new_client.id) + " Disconnected\n";
- 
-                //timestamp
-                time(&presentTime);
-                timeinfo = localtime(&presentTime);
-                printf(asctime(timeinfo));
- 
-                //print message
-                std::cout << msg << std::endl;
- 
-                closesocket(new_client.socket);
-                closesocket(client_array[new_client.id].socket);
-                client_array[new_client.id].socket = INVALID_SOCKET;
- 
-                //broadcast the disconnection message to the other clients
-                for (int i = 0; i < maxClients; i++) {
-                    if (client_array[i].socket != INVALID_SOCKET)
-                        iResult = send(client_array[i].socket, msg.c_str(), strlen(msg.c_str()), 0);
-                }
-                break;
-            }
-        }
-    } //end while
- 
-    thread.detach(); //make sure the client gets detached /*review this*/
- 
-    return 0;
-}
-
-int __cdecl main(void)
-{
-	WSADATA wsaData;
-	int iResult;
-
 
 			//if the client closes their window it saves who disconnected
 			else {
