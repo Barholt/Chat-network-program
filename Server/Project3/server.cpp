@@ -12,6 +12,12 @@
 #pragma comment (lib, "Ws2_32.lib")
 // #pragma comment (lib, "Mswsock.lib")
 
+//setting up clients
+struct client_type {
+    int id;
+    SOCKET socket;
+};
+
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
 
@@ -84,15 +90,33 @@ int __cdecl main(void)
 		return 1;
 	}
 
-	// Accept a client socket
-	ClientSocket = accept(ListenSocket, NULL, NULL);
-	if (ClientSocket == INVALID_SOCKET) {
-		printf("accept failed with error: %d\n", WSAGetLastError());
-		closesocket(ListenSocket);
-		WSACleanup();
-		return 1;
-	}
+	  while (1) {
+        SOCKET incoming = INVALID_SOCKET;
+        incoming = accept(server_socket, NULL, NULL); //accepts client
+		  
+	//reset the number of clients
+		sum_clients = -1;
 
+		//assign ID to client
+		tI = -1;
+		for (int i = 0; i < maxClients; i++) {
+			if (client[i].socket == INVALID_SOCKET && tI == -1) {
+				client[i].socket = incoming;
+				client[i].id = i;
+				tI = i;
+			}
+
+			if (client[i].socket != INVALID_SOCKET) {
+				sum_clients++; //number of clients raised by 1
+			}
+		  
+		  else {
+			  msg = "The server is currently full!";
+			  send(incoming, msg.c_str(), strlen(msg.c_str()), 0);
+			  std::cout << msg << std::endl; //prints in server that the server is full
+		  }
+		  
+	  }
 	// No longer need server socket
 	closesocket(ListenSocket);
 
