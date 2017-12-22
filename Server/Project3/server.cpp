@@ -34,7 +34,35 @@ int clientConnector(client_type &new_client, std::vector<client_type> &client_ar
 	std::string msg = "";
     	char tm[DEFAULT_BUFLEN] = ""; //tm is short for temporary message
 	
-	//to be worked on
+	//sending and receiving messages
+	while (1) {
+		memset(tm, 0, DEFAULT_BUFLEN); //memset: set bytes in memory
+		if (new_client.socket != 0)	{
+			int iResult = recv(new_client.socket, tm, DEFAULT_BUFLEN, 0);
+
+			//if there's no apparent errors, start showing messages
+			if (iResult != SOCKET_ERROR) {
+				if (strcmp("", tm)) {
+					msg = "Client #" + std::to_string(new_client.id) + ": " + tm + "\n";
+				}
+
+				//timestamp
+				time(&presentTime);
+				timeinfo = localtime(&presentTime);
+				printf(asctime(timeinfo));
+
+				//print message
+				std::cout << msg.c_str() << std::endl;
+
+				//broadcast that message to the other clients
+				for (int i = 0; i < maxClients; i++) {
+					if (client_array[i].socket != INVALID_SOCKET) {
+						if (new_client.id != i) {
+							iResult = send(client_array[i].socket, msg.c_str(), strlen(msg.c_str()), 0);
+						}
+					}
+				}
+			}
 	
 	thread.detach(); //make sure the client gets detached /*review this*/
  
