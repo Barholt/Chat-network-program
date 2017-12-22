@@ -29,6 +29,18 @@ const int maxClients = 5;
 time_t presentTime;
 struct tm * timeinfo;
 
+//starting up the client message construction
+int clientConnector(client_type &new_client, std::vector<client_type> &client_array, std::thread &thread) {
+	std::string msg = "";
+    	char tm[DEFAULT_BUFLEN] = ""; //tm is short for temporary message
+	
+	//to be worked on
+	
+	thread.detach(); //make sure the client gets detached /*review this*/
+ 
+    return 0;
+}
+
 int __cdecl main(void)
 {
 	WSADATA wsaData;
@@ -51,7 +63,7 @@ int __cdecl main(void)
 		return 1;
 	}
 
-	ZeroMemory(&hints, sizeof(hints));
+	Zeromory(&hints, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
