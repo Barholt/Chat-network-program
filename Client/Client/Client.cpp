@@ -100,7 +100,38 @@ if (client.socket == INVALID_SOCKET) { //If client.socket is invalid, then no co
 recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
 message = client.received_message;
 
+if (message != "The server is currently full!") { //If server is not full, the client can connect
+	client.id = atoi(client.received_message);
+	
+	thread my_thread(clientConnector, client);
+	
+	while (1) {
+		getline(cin, sent_message); //Promts input and saves it
+		iResult = send(client.socket, sent_message.c_str(), strlen(sent_message.c_str()), 0); //Sends the saved input
 		
+		cout << "\nMe: " << endl;
+		
+		if (sent_message == "QUIT") {
+			exit(1);
+		}
+	}
+	else
+	cout << client.received_message << endl;
+	
+cout << "Shutting down the socket..." << endl; 
+iResult = shutdown(client.socket, SD_SEND);
+if (iResult == SOCKET_ERROR) {
+	cout << "Shutting down failed with the following error: " << WSAGetLastError() << endl; //Returns error status from last failed window socket
+	closesocket(client.socket); //Closes socket
+	WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
+	system("pause");
+	return 1;
+}
+	closesocket(client.socket);
+	WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
+	system("pause");
+	return 0;
+}
 		
 		
 		
