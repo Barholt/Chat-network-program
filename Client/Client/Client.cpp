@@ -95,7 +95,7 @@ int main() {
 	//Attempting to connect to an address until succeeded
 	for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
 		//Creating a socket for connecting to the server
-		client.socket = socket(ptr->ai_family, ptr->ai:socktype, ptr->ai_protocol);
+		client.socket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 		if (client.socket == INVALID SOCKET) {
 			cout << "The socket failed with the following error: " << WSAGetLastError() << endl;
 			WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
