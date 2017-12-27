@@ -25,7 +25,34 @@ struct client_type {
 	char received_message[DEFAULT_BUFLEN];
 };
 
-
+//setting up time
+time_t presentTime;
+struct tm * timeinfo;
+ 
+int clientConnector(client_type &new_client);
+int main();
+//Connects client to the server via sockets
+int clientConnector(client_type &new_client){
+    while (1){
+        memset(new_client.received_message, 0, DEFAULT_BUFLEN);
+        //make sure the client send messages
+        if (new_client.socket != 0){
+            int iResult = recv(new_client.socket, new_client.received_message, DEFAULT_BUFLEN, 0);
+ 
+            if (iResult != SOCKET_ERROR) {
+                //timestamp
+                time(&presentTime);
+                timeinfo = localtime(&presentTime);
+                printf(asctime(timeinfo));
+                cout << new_client.received_message << endl;
+            }
+            //if client loses connection this prints out
+            else {
+                cout << "Recieving Client information failed: " << WSAGetLastError() << endl;
+                break;
+            }
+        }
+    }
 
 
 
