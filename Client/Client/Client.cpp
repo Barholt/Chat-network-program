@@ -142,8 +142,10 @@ if (message != "The server is currently full!") { //If server is not full, the c
 			exit(1);
 		}
 	}
+	my_thread.detach();
+}
 	else
-	cout << client.received_message << endl;
+		cout << client.received_message << endl;
 	
 cout << "Shutting down the socket..." << endl; 
 iResult = shutdown(client.socket, SD_SEND);
