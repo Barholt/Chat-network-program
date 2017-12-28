@@ -131,9 +131,6 @@ int main() {
 	recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
 	message = client.received_message;
 
-
-	//--------------------------------------------- SKRIV DETTE HER D. 22 DECEMBER I GITHUB!! -----------------------------------------------------
-
 	if (message != "The server is currently full!") { //if server is not full, client can connect
 		client.id = atoi(client.received_message); /*not sure this happens in cmd*/
 
