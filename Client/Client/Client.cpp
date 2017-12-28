@@ -1,4 +1,4 @@
-//Includes
+//import libraries
 #include <iostream>
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -7,18 +7,16 @@
 #include <cstdlib>
 #include <time.h>
 
-//Namespaces
-using namespace std;
+using namespace std; //without this you'd have to write std::cout <<;
 
-//Pragmas
 #pragma comment (lib, "Ws2_32.lib")
 #pragma warning (disable:4996)
 
-//Defines
-#define DEFAULT_IP "172.24.218.249" 	//Change in accordance to your PC
-#define DEFAULT_PORT "132"		//Change in accordance to your PC
-#define DEFAULT_BUFLEN 512
-
+           
+#define IP_ADDRESS "172.24.218.249" //change in accordance to your pc
+#define DEFAULT_PORT "132" //change in accordance to your pc
+#define DEFAULT_BUFLEN 512 	
+					 //create socket and id for sending and receiving information
 struct client_type {
 	SOCKET socket;
 	int id;
@@ -28,37 +26,37 @@ struct client_type {
 //setting up time
 time_t presentTime;
 struct tm * timeinfo;
- 
+
 int clientConnector(client_type &new_client);
 int main();
 //Connects client to the server via sockets
-int clientConnector(client_type &new_client){
-    while (1){
-        memset(new_client.received_message, 0, DEFAULT_BUFLEN);
-        //make sure the client send messages
-        if (new_client.socket != 0){
-            int iResult = recv(new_client.socket, new_client.received_message, DEFAULT_BUFLEN, 0);
- 
-            if (iResult != SOCKET_ERROR) {
-                //timestamp
-                time(&presentTime);
-                timeinfo = localtime(&presentTime);
-                printf(asctime(timeinfo));
-                cout << new_client.received_message << endl;
-            }
-            //if client loses connection this prints out
-            else {
-                cout << "Recieving Client information failed: " << WSAGetLastError() << endl;
-                break;
-            }
-        }
-    }
+int clientConnector(client_type &new_client) {
+	while (1) {
+		memset(new_client.received_message, 0, DEFAULT_BUFLEN);
+		//make sure the client send messages
+		if (new_client.socket != 0) {
+			int iResult = recv(new_client.socket, new_client.received_message, DEFAULT_BUFLEN, 0);
 
+			if (iResult != SOCKET_ERROR) {
+				//timestamp
+				time(&presentTime);
+				timeinfo = localtime(&presentTime);
+				printf(asctime(timeinfo));
+				cout << new_client.received_message << endl;
+			}
+			//if client loses connection this prints out
+			else {
+				cout << "Receiving Client information failed: " << WSAGetLastError() << endl;
+				break;
+			}
+		}
+	}
 
+	if (WSAGetLastError() == WSAECONNRESET)
+		cout << "The server has been disconnected" << endl;
 
-
-
-
+	return 0;
+}
 
 int main() {
 	WSAData wsa_data; //structure contains information about windows socket implementation
