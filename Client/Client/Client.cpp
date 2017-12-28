@@ -61,219 +61,115 @@ int clientConnector(client_type &new_client){
 
 
 int main() {
-	WSAData wsa_data; //Structure contains information about windows socket implementation
-	struct addrinfo *result = NULL, *ptr = NULL, hints; //Structure holds host address information
-	string = sent_message = ""; //These quotationmarks marks the messages that are being sent
-	client_type client = { INVALID_SOCKET, -1, ""}; //Calls a previous struct, and sets variables 
+	WSAData wsa_data; //structure contains information about windows socket implementation
+	struct addrinfo *result = NULL, *ptr = NULL, hints; //structure holds host address information
+	string sent_message = ""; //these quotationmarks marks messages that are being send
+	client_type client = { INVALID_SOCKET, -1, "" }; //calls a previous struct, and sets variables
 	int iResult = 0;
 	string message;
-	
+
 	cout << "Starting program...\n";
-	
-	//Initializing the Winsocket
+
+
+	//initializing the winsocket
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsa_data);
 	if (iResult != 0) {
-		cout << "Start-up failed with the following error: " << iRestult << endl;
+		cout << "Start-up failed with the following error: " << iResult << endl;
+		return 1;
 	}
-	
-	ZeroMemory(&hints, sizeof(hints)); //Fills memory with 0's to create the socket
-	hints.ai_family = AF_UNSPEC; //Returns socket address for any address family
-	hints.ai_socktype = SOCK_STREAM; //Specifies the socket type
-	hints.ai_protocol = IPPROTO_TCP; //Determines the connection type
-	
-	cout << "Connecting to server... \n";
-	
-	//Resolving the server address and server port
-	iResult == getaddrinfo(static_cast<LPCTSTR>(IP_ADDRESS), DEFAULT_PORT, &hints, &result);
-	if (iResult != 0) { //If iResult is not 0, it is an error
+
+	ZeroMemory(&hints, sizeof(hints)); //fills memory with 0's to create socket
+	hints.ai_family = AF_UNSPEC; //returns socket address for any address family
+	hints.ai_socktype = SOCK_STREAM; //specifies the socket type
+	hints.ai_protocol = IPPROTO_TCP; //determines the connection type
+
+	cout << "Connecting to server...\n";
+
+	//resolving the server address and server port
+	iResult = getaddrinfo(static_cast<LPCTSTR>(IP_ADDRESS), DEFAULT_PORT, &hints, &result);
+	if (iResult != 0) { //if iResult is NOT 0, it's an error
 		cout << "Failed to get address with the following error: " << iResult << endl;
-		WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
+		WSACleanup(); //terminates the use of Ws2_32.dll, and frees resources
 		system("pause");
 		return 1;
 	}
-	
-	//Attempting to connect to an address until succeeded
+
+	//attempting to connect to an address until it is succeeded
 	for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
-		//Creating a socket for connecting to the server
-		client.socket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-		if (client.socket == INVALID SOCKET) {
-			cout << "The socket failed with the following error: " << WSAGetLastError() << endl;
-			WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
+
+		// Creating a SOCKET for connecting to the server
+		client.socket = socket(ptr->ai_family, ptr->ai_socktype,
+			ptr->ai_protocol);
+		if (client.socket == INVALID_SOCKET) {
+			cout << "The socket failed with following error: " << WSAGetLastError() << endl;
+			WSACleanup(); //terminates the use of Ws2_32.dll, and frees resources
 			system("pause");
 			return 1;
 		}
-	
-		//Connecting to server
+
+		// Connecting to the server
 		iResult = connect(client.socket, ptr->ai_addr, (int)ptr->ai_addrlen);
-		if (iResult == SOCKET_ERROR) { //If socket error occours, it is invalid
+		if (iResult == SOCKET_ERROR) { //if socket error occours, it is invalid
 			closesocket(client.socket);
 			client.socket = INVALID_SOCKET;
-			continue;
-		}
-	break;
-	}
-freeaddrinfo(result); //Frees address information
-
-if (client.socket == INVALID_SOCKET) { //If client.socket is invalid, then no connection to the server is made
-	cout << "Unable to connect to server!" << endl;
-	WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
-	system("pause");
-	return 1;
-}
-//If no errors are encountered, then the connection to the server is successful
-	cout << "Successfully connected to server!\nTo close the program, type 'QUIT'\n\nMe:" << endl;
-	
-//Obtaining the ID from the server for the client
-recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
-message = client.received_message;
-
-if (message != "The server is currently full!") { //If server is not full, the client can connect
-	client.id = atoi(client.received_message);
-	
-	thread my_thread(clientConnector, client);
-	
-	while (1) {
-		getline(cin, sent_message); //Promts input and saves it
-		iResult = send(client.socket, sent_message.c_str(), strlen(sent_message.c_str()), 0); //Sends the saved input
-		
-		cout << "\nMe: " << endl;
-		
-		if (sent_message == "QUIT") {
-			exit(1);
-		}
-	}
-	my_thread.detach();
-}
-	else
-		cout << client.received_message << endl;
-	
-cout << "Shutting down the socket..." << endl; 
-iResult = shutdown(client.socket, SD_SEND);
-if (iResult == SOCKET_ERROR) {
-	cout << "Shutting down failed with the following error: " << WSAGetLastError() << endl; //Returns error status from last failed window socket
-	closesocket(client.socket); //Closes socket
-	WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
-	system("pause");
-	return 1;
-}
-	closesocket(client.socket);
-	WSACleanup(); //Terminates the use of Ws2_32.dll, and frees resources
-	system("pause");
-	return 0;
-}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	SOCKET ConnectSocket = INVALID_SOCKET;
-	struct addrinfo *result = NULL,
-		*ptr = NULL,
-		hints;
-	char *sendbuf = "this is a test";
-	char recvbuf[DEFAULT_BUFLEN];
-	int iResult;
-	int recvbuflen = DEFAULT_BUFLEN;
-
-	// Validate the parameters
-	if (argc != 2) {
-		printf("usage: %s server-name\n", argv[0]);
-		return 1;
-	}
-
-	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
-		printf("WSAStartup failed with error: %d\n", iResult);
-		return 1;
-	}
-
-	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-
-	// Resolve the server address and port
-	iResult = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
-	if (iResult != 0) {
-		printf("getaddrinfo failed with error: %d\n", iResult);
-		WSACleanup();
-		return 1;
-	}
-
-	// Attempt to connect to an address until one succeeds
-	for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
-
-		// Create a SOCKET for connecting to server
-		ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
-			ptr->ai_protocol);
-		if (ConnectSocket == INVALID_SOCKET) {
-			printf("socket failed with error: %ld\n", WSAGetLastError());
-			WSACleanup();
-			return 1;
-		}
-
-		// Connect to server.
-		iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-		if (iResult == SOCKET_ERROR) {
-			closesocket(ConnectSocket);
-			ConnectSocket = INVALID_SOCKET;
 			continue;
 		}
 		break;
 	}
 
-	freeaddrinfo(result);
+	freeaddrinfo(result); //frees address information
 
-	if (ConnectSocket == INVALID_SOCKET) {
-		printf("Unable to connect to server!\n");
-		WSACleanup();
+	if (client.socket == INVALID_SOCKET) { //if client.socket is invalid, then no connection to server is made
+		cout << "Unable to connect to the server!" << endl;
+		WSACleanup(); //terminates the use of Ws2_32.dll, and frees resources
+		system("pause");
 		return 1;
 	}
+	//if no errors encountered, then connection to server is successful
+	cout << "Successfully connected to the server!\nTo end program type in 'QUIT'\n\nMe:" << endl;
 
-	// Send an initial buffer
-	iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
+
+	//obtain id from server for this client;
+	recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
+	message = client.received_message;
+
+
+	//--------------------------------------------- SKRIV DETTE HER D. 22 DECEMBER I GITHUB!! -----------------------------------------------------
+
+	if (message != "The server is currently full!") { //if server is not full, client can connect
+		client.id = atoi(client.received_message); /*not sure this happens in cmd*/
+
+		thread my_thread(clientConnector, client);
+
+		while (1) {
+			getline(cin, sent_message); //promts input and saves it
+			iResult = send(client.socket, sent_message.c_str(), strlen(sent_message.c_str()), 0); //sends the saved input
+
+			cout << "\nMe: " << endl;
+
+			if (sent_message == "QUIT") {
+				exit(1);
+			}
+		}
+
+		//shutdown the connection since no more data will be sent
+		my_thread.detach();
+	}
+	else
+		cout << client.received_message << endl;
+
+	cout << "Shutting down the socket..." << endl; /*not sure this happens in cmd*/
+	iResult = shutdown(client.socket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
-		printf("send failed with error: %d\n", WSAGetLastError());
-		closesocket(ConnectSocket);
-		WSACleanup();
+		cout << "Shutting down failed with the following error: " << WSAGetLastError() << endl; //returns error status from the last failed windows sockets
+		closesocket(client.socket); //closes socket
+		WSACleanup(); //terminates the use of Ws2_32.dll, and frees resources
+		system("pause");
 		return 1;
 	}
 
-	printf("Bytes Sent: %ld\n", iResult);
-
-	// shutdown the connection since no more data will be sent
-	iResult = shutdown(ConnectSocket, SD_SEND);
-	if (iResult == SOCKET_ERROR) {
-		printf("shutdown failed with error: %d\n", WSAGetLastError());
-		closesocket(ConnectSocket);
-		WSACleanup();
-		return 1;
-	}
-
-	// Receive until the peer closes the connection
-	do {
-
-		iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-		if (iResult > 0)
-			printf("Bytes received: %d\n", iResult);
-		else if (iResult == 0)
-			printf("Connection closed\n");
-		else
-			printf("recv failed with error: %d\n", WSAGetLastError());
-
-	} while (iResult > 0);
-
-	// cleanup
-	closesocket(ConnectSocket);
-	WSACleanup();
-
+	closesocket(client.socket);
+	WSACleanup(); //terminates the use of Ws2_32.dll, and frees resources
+	system("pause");
 	return 0;
 }
