@@ -1,4 +1,4 @@
-# ChatProgram for miniproject
+# Instructions for ChatProgram for miniproject
 This Mini Project is created in by:<br>
 <b>Lasse Krøigaard</b><br>
 <b>Stephanie Christoffersen</b><br>
