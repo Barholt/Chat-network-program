@@ -8,6 +8,8 @@ This Mini Project is created in by:<br>
 
 In order to have the program working, a few changes are necessary. Here is a small guide, which describes step-by-step on what needs to be done:<br><br>
 
+The program has successfully been tested with Visual Studio 2013 and Visual Studio 2017. It's therefore recommended to use either of these for editing the code.<br><br>
+
 1: Open the Server folder.<br>
 2: Open the Project3.sln file.<br>
 3: Find #define section.<br>
